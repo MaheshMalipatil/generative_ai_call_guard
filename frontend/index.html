@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generative AI Call Guard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Animated particle background -->
+  <canvas id="particle-canvas"></canvas>
+  <div class="background"></div>
+
+  <!-- Glass UI -->
+  <div class="glass-container">
+      <h1>🔒 Generative AI Call Guard</h1>
+
+      <div class="upload-section">
+          <label for="file-input" class="input-label">
+              <i class="fas fa-upload"></i> Choose File
+          </label>
+          <input type="file" id="file-input" class="input-file">
+          <div class="file-name">No file chosen</div>
+      </div>
+
+      <button class="upload-btn" onclick="uploadAndDetect()">🚀 Upload & Detect</button>
+
+      <!-- Result Section -->
+      <div class="result-section" id="result-section">
+          <div class="status" id="status"></div>
+          <div class="percentage" id="percentage">0%</div>
+          <div class="progress-bar">
+              <div class="progress" id="progress-bar"></div>
+          </div>
+      </div>
+  </div>
+
+  <script>
+      document.getElementById('file-input').addEventListener('change', function() {
+          const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+          document.querySelector('.file-name').innerText = fileName;
+      });
+
+      function uploadAndDetect() {
+          const score = Math.random() * 100;
+          displayResult(score);
+      }
+
+      function displayResult(score) {
+          const statusElem = document.getElementById('status');
+          const percentageElem = document.getElementById('percentage');
+          const progressBarElem = document.getElementById('progress-bar');
+
+          percentageElem.textContent = '$Math.round(score)%';
+          progressBarElem.style.width = '$score%';
+
+          if (score > 50) {
+              statusElem.textContent = '✅ Real Audio';
+              statusElem.style.color = '#00ffcc';
+          } else {
+              statusElem.textContent = '❌ AI Fake';
+              statusElem.style.color = '#ff4d6d';
+          }
+
+          document.getElementById('result-section').style.display = 'block';
+      }
+
+      /* 🎇 Particle Animation 🎇 */
+      const canvas = document.getElementById("particle-canvas");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const particleCount = 70;
+
+      for (let i = 0; i < particleCount; i++) {
+          particles.push({
+              x: Math.random() * canvas.width,
+              y: Math.random() * canvas.height,
+              vx: (Math.random() - 0.5) * 1,
+              vy: (Math.random() - 0.5) * 1,
+              size: Math.random() * 2 + 1
+          });
+      }
+
+      function drawParticles() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#fff";
+
+          particles.forEach(p => {
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+              ctx.fill();
+          });
+
+          // Draw connecting lines
+          ctx.strokeStyle = "rgba(255,255,255,0.2)";
+          particles.forEach((p1, i) => {
+              particles.slice(i+1).forEach(p2 => {
+                  const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+                  if (dist < 120) {
+                      ctx.beginPath();
+                      ctx.moveTo(p1.x, p1.y);
+                      ctx.lineTo(p2.x, p2.y);
+                      ctx.stroke();
+                  }
+              });
+          });
+      }
+
+      function updateParticles() {
+          particles.forEach(p => {
+              p.x += p.vx;
+              p.y += p.vy;
+
+              if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+              if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+          });
+      }
+
+      function animate() {
+          drawParticles();
+          updateParticles();
+          requestAnimationFrame(animate);
+      }
+
+      animate();
+
+      window.addEventListener("resize", () => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+      });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+venv/
+_pycache_/
+*.py[cod]
+*.so
+.vscode/
+.env
